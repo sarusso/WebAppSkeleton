@@ -1,0 +1,51 @@
+version: '3'
+services:
+
+  postgres:
+    image: "webappskeleton/postgres"
+    container_name: postgres
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      - SAFEMODE=False
+    volumes:
+      - ./data/postgres/data:/data
+
+  proxy:
+    image: "webappskeleton/proxy"
+    container_name: proxy
+    hostname: proxy
+    restart: unless-stopped
+    environment:
+      - PUBLIC_HOST=localhost
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/shared:/shared
+      - ./data/proxy/letsencrypt:/etc/letsencrypt
+      - ./data/proxy/log:/var/log/proxy
+
+  webapp:
+    image: "webappskeleton/webapp"
+    container_name: webapp
+    hostname: webapp
+    restart: unless-stopped
+    environment:
+      - DJANGO_DB_ENGINE="django.db.backends.postgresql_psycopg2"
+      - DJANGO_DB_NAME="webapp"
+      - DJANGO_DB_USER="webapp_master"
+      - DJANGO_DB_PASSWORD="36ef16123e80h"
+      - DJANGO_DB_HOST="postgres"
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DEV_SERVER=true
+      - DJANGO_DEBUG=true
+      - DJANGO_LOG_LEVEL=CRITICAL
+      - WEBAPP_LOG_LEVEL=DEBUG
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data/shared:/shared
+      - ./data/webapp/data:/data
+      - ./data/webapp/log:/var/log/webapp
+      - ./services/webapp/code:/code

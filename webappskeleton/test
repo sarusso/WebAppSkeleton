@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Example: webappskeleton/test project.core_app.tests.test_apis.ApiTests.test_api_web_auth
+
+# You probably want to set DJANGO_LOG_LEVEL to ERROR and project_LOG_LEVEL to DEBUG if you are doing tdd.
+DJANGO_LOG_LEVEL="CRITICAL"
+project_LOG_LEVEL="CRITICAL"
+
+# Set DB to SQLIte in-memory
+DJANGO_DB_ENGINE="django.db.backends.sqlite3"
+DJANGO_DB_NAME=":memory:"
+
+webappskeleton/shell webapp "export DJANGO_DB_ENGINE=$DJANGO_DB_ENGINE && export DJANGO_DB_NAME=$DJANGO_DB_NAME && cd /code && DJANGO_LOG_LEVEL=$DJANGO_LOG_LEVEL project_LOG_LEVEL=$project_LOG_LEVEL python3 manage.py test $@"

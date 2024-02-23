@@ -1,0 +1,92 @@
+{% load static %} 
+{% include "header.html" %}
+{% include "navigation.html" %}
+{% include "logo.html" %}
+
+<div class="container">
+  <div class="dashboard">
+    <div class="span8 offset2">
+    
+      <h1>Register</h1>
+      <hr>
+      
+      {% if data.status == "wrong_invite" %}   
+      <div class='centerbox-error'>
+          Sorry, this invitation code is not valid.
+      </div>
+      
+      {% elif data.status == "already" %}
+      <div class='centerbox'>
+          You are already signed in, cannot create a new account.
+      </div>
+
+      {% elif data.status == "something_missing" %}
+      <div class='centerbox'>
+          Some input (email/password/invitation code) is missing.
+      </div>
+
+      {% elif data.status == "activated" %}
+      <div class='centerbox-success'>
+          Ok, account created!
+      </div>
+      <br />
+      
+      You signed up with the following email address: <b>{{data.user.email}}</b>. If this is wrong, change it now in your account settings.
+      <br/>
+      <br/>
+      Start by clicking on the top-right menu icon.
+      {% else %}
+
+      <p><b>Welcome!</b></p>
+      
+      <p>
+      {% if INVITATION_CODE_ENABLED %}
+      An invitation code is required to register. If you have one, then you can sign up right now. Otherwise, please get in touch.
+      {% else %}
+      Enter your email address and choose a password to register.
+      {% endif %}
+      </p>
+      
+      <br/>
+      <br/>
+      
+      <div class='centerbox'>
+          <form class="form-signin" role="form" action='/register/' method='POST'>
+          {% csrf_token %}
+          <input type="email" class="form-control" placeholder="Email" name='email' required autofocus>
+          <input type="password" class="form-control" placeholder="Password" name='password' required>
+          {% if INVITATION_CODE_ENABLED %}
+          <input type="text" class="form-control" placeholder="Invitation code" name='invitation' value='' required autofocus>
+          {% endif %}
+          <input type='submit' class="btn btn-lg ha-btn-lg" value='Go' />
+          </form>
+      </div>
+      <br /></br>
+      <!-- <div class='centerbox' style="max-width:980px; padding:10px; background-color:#e6fff3; border:1px solid #A9A9A9;" >
+      <center>Please not that we do not verify email addressed and passwords at this stage, so please <u>double check</u> the form above before signing up.</center>
+</div> -->
+      {% endif %}
+      
+      {% if data.error %}   
+      <div class='centerbox-error'>
+          {{ data.error }}
+      </div>
+      
+      {% endif %}
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      
+    </div>
+  </div>
+</div>
+
+
+{% include "footer.html" %}
+
+
+
+
